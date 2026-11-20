@@ -1,0 +1,218 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-top: 28px;
+}
+.meta { font-size: 14px; color: var(--ink-soft); }
+.inlineButton {
+  min-height: 44px;
+  padding: 8px 12px;
+  color: var(--primary);
+  background: var(--surface);
+  border: 1px solid var(--field-line);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* Tong quan phuong */
+.summary {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.summaryTitle { font-size: 20px; }
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(170px, 100%), 1fr));
+  gap: 12px;
+  margin: 0;
+}
+.tilesCompact { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+}
+.tilePrimary { background: var(--primary-tint); border-color: #c6d9ef; }
+.tileLabel { font-size: 14px; color: var(--ink-soft); }
+.tileValue {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--primary-deep);
+  font-variant-numeric: tabular-nums;
+}
+.tilesCompact .tileValue { font-size: 22px; }
+.tileUnit { font-size: 14px; font-weight: 500; color: var(--ink-soft); }
+
+/* Ban do (mot ben) + khung thong tin (ben con lai) */
+.explorer {
+  --explorer-height: 720px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 480px;
+  min-width: 0;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.mapFrame {
+  --map-height: var(--explorer-height);
+  position: relative;
+  min-width: 0;
+  min-height: var(--explorer-height);
+  background: var(--placeholder);
+}
+.mapFallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: var(--explorer-height);
+  padding: 24px;
+  text-align: center;
+  color: var(--ink-mid);
+}
+.panel {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  height: var(--explorer-height);
+  border-left: 1px solid var(--line);
+}
+.panelSearch {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+}
+.panelBody { flex: 1; min-height: 0; overflow-y: auto; }
+.panelSection { display: flex; flex-direction: column; gap: 18px; padding: 18px; }
+.searchLabel { font-size: 15px; font-weight: 600; }
+.search {
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 14px;
+  font-size: 16px;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--field-line);
+  border-radius: var(--radius-sm);
+}
+
+/* Danh sach To */
+.list { list-style: none; margin: -8px 0 0; padding: 0; }
+.list li + li { margin-top: 10px; }
+.option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 14px;
+  text-align: left;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+.option:hover, .optionActive { background: var(--primary-tint); border-color: var(--primary); }
+.optionActive { box-shadow: inset 4px 0 0 var(--primary); }
+.optionMain { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.optionName { font-family: var(--font-heading); font-size: 16px; }
+.optionLeader { font-size: 14px; color: var(--ink-mid); }
+.optionStats {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  flex-shrink: 0;
+  font-size: 13px;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+.optionStats b { font-size: 15px; color: var(--primary-deep); }
+
+/* Chi tiet To */
+.backButton {
+  align-self: flex-start;
+  min-height: 44px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--primary);
+  background: var(--surface);
+  border: 1px solid var(--field-line);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+.backButton:hover { border-color: var(--primary); background: var(--primary-tint); }
+.detailHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--line);
+}
+.detailTitle { font-size: 24px; color: var(--primary-deep); }
+.detailLeader { font-size: 15px; }
+.detailText { font-size: 15px; color: var(--ink-mid); }
+.callButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  margin-top: 4px;
+  padding: 10px 18px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--primary);
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+}
+.callButton:hover { background: var(--primary-deep); }
+.block { display: flex; flex-direction: column; gap: 14px; }
+.blockTitle { font-size: 18px; }
+.chartEmpty {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px;
+  font-size: 15px;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+}
+
+@media (max-width: 1100px) {
+  .explorer { grid-template-columns: minmax(0, 1fr) 400px; }
+}
+/* Hep: ban do o tren, khung thong tin ben duoi (khong cuon long). */
+@media (max-width: 900px) {
+  .explorer { --explorer-height: 460px; grid-template-columns: minmax(0, 1fr); }
+  .panel { height: auto; border-left: 0; border-top: 1px solid var(--line); scroll-margin-top: 16px; }
+  .panelBody { overflow: visible; }
+}
+@media (max-width: 760px) {
+  .page { padding-top: 16px; gap: 16px; }
+  .summary { padding: 16px; }
+  .tileValue { font-size: 22px; }
+  .mapFrame { --map-height-mobile: 420px; }
+  .explorer { --explorer-height: 420px; }
+  .panelSearch, .panelSection { padding: 14px; }
+  .detailTitle { font-size: 22px; }
+}

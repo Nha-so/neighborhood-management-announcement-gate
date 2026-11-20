@@ -1,0 +1,54 @@
+.chart { display: flex; flex-direction: column; gap: 22px; }
+.section { display: flex; flex-direction: column; gap: 12px; }
+.sectionTitle {
+  font-family: var(--font-heading);
+  font-size: 17px;
+  color: var(--primary-deep);
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+}
+.unit, .directGroup { display: flex; flex-direction: column; gap: 10px; }
+.unit {
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--unit-color);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+}
+.unitTitle { font-size: 15px; font-weight: 700; color: var(--unit-color); }
+.positions {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr));
+  gap: 10px;
+}
+.position {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+}
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--unit-color);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+}
+.positionText { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.role { font-size: 13px; color: var(--ink-soft); line-height: 1.35; }
+.holder { font-size: 15px; font-weight: 600; color: var(--ink); overflow-wrap: anywhere; }
+.vacant { font-size: 14px; font-style: italic; color: var(--ink-soft); }

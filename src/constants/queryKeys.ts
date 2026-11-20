@@ -10,4 +10,7 @@ export const queryKeys = {
   openSurveys: ["surveys", "open"] as const,
   neighborhoods: (params: { q: string; wardCode: string }) =>
     ["neighborhoods", "public", params] as const,
+  neighborhoodStats: (params: { wardCode: string }) =>
+    ["neighborhoods", "public", "stats", params] as const,
+  neighborhoodOverview: (id: string) => ["neighborhoods", "public", "overview", id] as const,
 };

@@ -3,8 +3,9 @@
   flex-direction: column;
   gap: 18px;
   padding: 24px;
-  background: var(--surface);
-  border: 1px solid var(--line);
+  /* Light blue tint sets the map section apart; the list panel and cards inside stay white. */
+  background: #eef5fc;
+  border: 1px solid #cfe0f2;
   border-radius: var(--radius);
   min-width: 0;
   scroll-margin-top: 24px;
@@ -19,8 +20,9 @@
 .description { margin-top: 8px; font-size: 15px; color: var(--ink-soft); }
 .layout {
   display: grid;
-  grid-template-columns: 300px minmax(0, 1fr);
+  grid-template-columns: 420px minmax(0, 1fr);
   min-width: 0;
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
   overflow: hidden;
@@ -45,7 +47,23 @@
   color: var(--ink);
 }
 .meta { font-size: 13px; color: var(--ink-soft); }
-.list { list-style: none; margin: 0; padding: 3px; overflow-y: auto; min-height: 0; }
+.results { flex: 1; min-height: 0; overflow-y: auto; margin: 0 -3px; }
+.list { list-style: none; margin: 0; padding: 3px; }
+.resultsHeading {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  margin: 0;
+  padding: 8px 3px 6px;
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--primary-deep);
+  background: var(--surface);
+}
+.results .list + .resultsHeading { margin-top: 12px; }
 .list li + li { margin-top: 10px; }
 .option {
   display: flex;
@@ -63,8 +81,8 @@
 .option span { font-size: 13px; }
 .option:hover, .selected { background: var(--primary-tint); border-color: var(--primary); }
 .boundaryStatus { color: var(--ink-soft); }
-.frame, .mapSurface { position: relative; min-width: 0; min-height: 580px; background: var(--placeholder); }
-.map { display: block; width: 100%; height: 580px; border: 0; }
+.frame, .mapSurface { position: relative; min-width: 0; min-height: var(--map-height, 580px); background: var(--placeholder); }
+.map { display: block; width: 100%; height: var(--map-height, 580px); border: 0; }
 .mapWarning {
   position: absolute;
   bottom: 40px;
@@ -78,12 +96,12 @@
   font-size: 13px;
   z-index: 1;
 }
-.details { display: flex; flex-direction: column; gap: 8px; padding: 18px; border-radius: var(--radius-sm); background: var(--primary-tint); }
+.details { display: flex; flex-direction: column; gap: 8px; padding: 18px; border: 1px solid #cfe0f2; border-radius: var(--radius-sm); background: var(--surface); }
 .more { display: inline-flex; align-items: center; align-self: flex-start; min-height: 44px; font-size: 14px; font-weight: 600; text-decoration: none; }
 .heading > .more { flex-shrink: 0; }
 .retry { padding: 8px 12px; min-height: 44px; cursor: pointer; }
 @media (max-width: 960px) {
-  .layout { grid-template-columns: 250px minmax(0, 1fr); }
+  .layout { grid-template-columns: 340px minmax(0, 1fr); }
 }
 @media (max-width: 760px) {
   .card { padding: 16px; }
@@ -91,8 +109,8 @@
   .title { font-size: 22px; }
   .layout { grid-template-columns: minmax(0, 1fr); }
   .sidebar { height: 320px; padding: 14px; border-right: 0; border-bottom: 1px solid var(--line); }
-  .frame, .mapSurface { min-height: 420px; }
-  .map { height: 420px; }
+  .frame, .mapSurface { min-height: var(--map-height-mobile, 420px); }
+  .map { height: var(--map-height-mobile, 420px); }
 }
 
 .categoryStrip {
@@ -105,20 +123,29 @@
 }
 .categoryChip {
   display: inline-flex;
+  flex-direction: column;
   align-items: center;
-  gap: 7px;
+  justify-content: center;
+  gap: 6px;
   flex: 0 0 auto;
   scroll-snap-align: start;
-  white-space: nowrap;
-  min-height: 44px;
-  border-radius: 24px;
+  min-width: 104px;
+  max-width: 144px;
+  min-height: 84px;
+  border-radius: var(--radius-sm);
   border: 1px solid var(--field-line);
-  padding: 9px 16px;
+  padding: 10px 12px;
   color: var(--ink-mid);
   background: var(--surface);
   cursor: pointer;
-  font-size: 14px;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.3;
+  text-align: center;
 }
+.chipIcon { display: inline-flex; align-items: center; justify-content: center; height: 28px; font-size: 24px; line-height: 1; }
+.chipIcon svg { width: 26px; height: 26px; }
+.chipLabel { display: block; }
 .categoryChip:hover { border-color: var(--primary); }
 .activeChip { background: var(--primary); color: #fff; border-color: var(--primary); }
 .reloadMap, .inlineButton { color: var(--primary); background: var(--surface); border: 1px solid var(--field-line); border-radius: 6px; padding: 8px 12px; cursor: pointer; min-height: 44px; }
@@ -154,6 +181,51 @@
   border-radius: 50%;
 }
 .poiBadge { width: 32px; height: 32px; }
+/* The card is the <li>: the select button fills it, and the directions link
+   (it can't be nested inside a <button>) is laid over the bottom of the info column. */
+.poiItem { --poi-media-width: 140px; position: relative; }
+.option.poiOption {
+  flex-direction: row;
+  align-items: stretch;
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+}
+.poiOption .poiInfo { padding-bottom: 48px; }
+.poiItem .poiDirections {
+  position: absolute;
+  left: calc(var(--poi-media-width) + 2px);
+  bottom: 2px;
+  z-index: 1;
+  min-height: 40px;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+}
+.poiItem .poiDirections:focus-visible { outline: 3px solid var(--primary); outline-offset: -3px; }
+.poiMedia {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 var(--poi-media-width, 140px);
+  min-height: 136px;
+  align-self: stretch;
+  overflow: hidden;
+  background: var(--placeholder);
+}
+.poiMediaImage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.poiMediaFallback { background: var(--poi-color); color: #fff; }
+.poiMediaFallback svg { width: 40px; height: 40px; }
+.poiInfo { display: flex; flex-direction: column; gap: 6px; min-width: 0; flex: 1; padding: 12px 14px; }
+.option .poiInfo .poiName { font-size: 16px; line-height: 1.3; overflow-wrap: anywhere; }
+.option .poiInfo .poiAddress { font-size: 14px; line-height: 1.4; color: var(--ink-mid); }
+.option .poiInfo .poiCategoryLabel { font-size: 13px; color: var(--ink-soft); }
 .poiMarker {
   width: 44px;
   height: 44px;
@@ -173,4 +245,51 @@
 .poiMarker:hover .markerBadge { box-shadow: 0 3px 10px #17212b99; }
 .poiPopup { z-index: 2; }
 .noPhone { display: block; padding: 8px 12px; }
+
+/* Tổ card: the <li> is the card; the select button stretches over it. */
+.nbCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 14px 6px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--ink-mid);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+.nbCard:hover, .nbCard:focus-within { background: var(--primary-tint); border-color: var(--primary); }
+.nbCard.selected { box-shadow: inset 4px 0 0 var(--primary); }
+.nbSelect {
+  padding: 0;
+  text-align: left;
+  font: inherit;
+  color: var(--ink);
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.nbSelect strong { font-family: var(--font-heading); font-size: 16px; }
+.nbSelect::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
+.nbSelect:focus-visible { outline: none; }
+.nbSelect:focus-visible::after { outline: 3px solid var(--primary); outline-offset: -3px; }
+.nbArea { overflow-wrap: anywhere; }
+.nbClamp { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.nbStats { color: var(--ink-soft); }
+.nbStats b { color: var(--primary-deep); }
+.nbDescription { color: var(--ink); }
+.nbActions {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 4px;
+  margin: 2px -12px 0;
+  padding-top: 4px;
+  border-top: 1px solid var(--line-soft);
+}
+.nbActions .noPhone { font-size: 13px; color: var(--ink-soft); }
 .option strong { font-family: var(--font-heading); }

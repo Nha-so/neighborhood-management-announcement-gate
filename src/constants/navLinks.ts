@@ -10,6 +10,7 @@ export const navLinks: NavLink[] = [
   { to: "/", label: "Trang chủ", route: true },
   { to: "/#ban-do", label: "Bản đồ Tổ dân phố" },
   { to: "/to-dan-pho", label: "Tổ dân phố", route: true },
+  { to: "/thong-tin-to-dan-pho", label: "Thông tin Tổ dân phố", route: true },
   { to: "/#tin-tuc", label: "Tin tức" },
   { to: "#lien-he", label: "Liên hệ" },
 ];

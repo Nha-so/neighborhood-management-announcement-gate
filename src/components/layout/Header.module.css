@@ -42,10 +42,16 @@
   color: #fff;
 }
 
+/* Circular badge: the uploaded image is cropped to fill the circle, with a
+   white ring and background so transparent or light logos stay visible. */
 .logo {
   width: 60px;
   height: 60px;
-  object-fit: contain;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #fff;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
   flex-shrink: 0;
 }
 
