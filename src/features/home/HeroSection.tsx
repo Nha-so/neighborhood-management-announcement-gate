@@ -25,7 +25,7 @@ export function HeroSection() {
         <img
           className={styles.banner}
           src={billboardUrl}
-          alt={`Ảnh banner cổng thông tin ${wardInSentence}`}
+          alt={`Ảnh banner trang thông tin điện tử ${wardInSentence}`}
           onError={() => setImageFailed(true)}
         />
       </div>

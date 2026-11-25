@@ -65,22 +65,7 @@
 }
 .results .list + .resultsHeading { margin-top: 12px; }
 .list li + li { margin-top: 10px; }
-.option {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  width: 100%;
-  padding: 14px;
-  text-align: left;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
-  background: var(--surface);
-  color: var(--ink);
-  cursor: pointer;
-}
-.option span { font-size: 13px; }
-.option:hover, .selected { background: var(--primary-tint); border-color: var(--primary); }
-.boundaryStatus { color: var(--ink-soft); }
+.selected { background: var(--primary-tint); border-color: var(--primary); }
 .frame, .mapSurface { position: relative; min-width: 0; min-height: var(--map-height, 580px); background: var(--placeholder); }
 .map { display: block; width: 100%; height: var(--map-height, 580px); border: 0; }
 .mapWarning {
@@ -113,6 +98,9 @@
   .map { height: var(--map-height-mobile, 420px); }
 }
 
+/* Centred when the types fit; when they overflow, the auto margins on the
+   first/last card collapse so the strip still scrolls from the first card
+   (justify-content: center would cut off the left side). */
 .categoryStrip {
   display: flex;
   gap: 10px;
@@ -126,50 +114,38 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 8px;
   flex: 0 0 auto;
   scroll-snap-align: start;
-  min-width: 104px;
-  max-width: 144px;
-  min-height: 84px;
+  min-width: 132px;
+  max-width: 176px;
+  min-height: 108px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--field-line);
-  padding: 10px 12px;
+  padding: 14px 16px;
   color: var(--ink-mid);
   background: var(--surface);
   cursor: pointer;
-  font-size: 15px;
-  font-weight: 500;
+  font-size: 17px;
+  font-weight: 600;
   line-height: 1.3;
   text-align: center;
 }
-.chipIcon { display: inline-flex; align-items: center; justify-content: center; height: 28px; font-size: 24px; line-height: 1; }
-.chipIcon svg { width: 26px; height: 26px; }
+.chipIcon { display: inline-flex; align-items: center; justify-content: center; height: 38px; font-size: 32px; line-height: 1; }
+.chipIcon svg { width: 34px; height: 34px; }
 .chipLabel { display: block; }
+.categoryChip:first-child { margin-left: auto; }
+.categoryChip:last-child { margin-right: auto; }
 .categoryChip:hover { border-color: var(--primary); }
 .activeChip { background: var(--primary); color: #fff; border-color: var(--primary); }
 .reloadMap, .inlineButton { color: var(--primary); background: var(--surface); border: 1px solid var(--field-line); border-radius: 6px; padding: 8px 12px; cursor: pointer; min-height: 44px; }
 .reloadMap { display: block; margin-top: 8px; }
-
-.poiDirections, .callLink {
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
-  padding: 8px 12px;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--primary);
-  text-decoration: none;
-}
-
-.poiDirections:hover, .callLink:hover { text-decoration: underline; }
 
 .poiCategoryChip { color: var(--poi-color); border-color: var(--poi-color); }
 .poiCategoryChip:hover { border-color: var(--poi-color); box-shadow: inset 0 0 0 1px var(--poi-color); }
 .poiCategoryChip.activeChip { background: var(--poi-color); border-color: var(--poi-color); color: #fff; }
 .poiCategoryChip svg { flex-shrink: 0; }
 .poiHeading { display: flex; align-items: center; gap: 10px; }
-.option .poiHeading { font-size: 14px; }
 .poiHeading strong { min-width: 0; }
 .poiBadge, .markerBadge {
   display: inline-flex;
@@ -181,27 +157,45 @@
   border-radius: 50%;
 }
 .poiBadge { width: 32px; height: 32px; }
-/* The card is the <li>: the select button fills it, and the directions link
-   (it can't be nested inside a <button>) is laid over the bottom of the info column. */
-.poiItem { --poi-media-width: 140px; position: relative; }
-.option.poiOption {
-  flex-direction: row;
+/* POI card: the <li> is the card (image | info). The name button's ::after
+   (see .nbSelect) covers the card; the directions button sits above it. */
+.poiItem { --poi-media-width: 140px; }
+.poiCard {
+  position: relative;
+  display: flex;
   align-items: stretch;
-  gap: 0;
-  padding: 0;
   overflow: hidden;
-}
-.poiOption .poiInfo { padding-bottom: 48px; }
-.poiItem .poiDirections {
-  position: absolute;
-  left: calc(var(--poi-media-width) + 2px);
-  bottom: 2px;
-  z-index: 1;
-  min-height: 40px;
-  padding: 6px 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
   border-radius: var(--radius-sm);
 }
-.poiItem .poiDirections:focus-visible { outline: 3px solid var(--primary); outline-offset: -3px; }
+.poiCard:hover, .poiCard:focus-within { background: var(--primary-tint); border-color: var(--primary); }
+.poiCard.selected { box-shadow: inset 0 0 0 1px var(--primary); }
+
+/* "Chỉ đường trên Google Maps" button in the POI's category colour. */
+.mapsButton {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
+  min-height: 36px;
+  padding: 7px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.25;
+  color: #fff;
+  background: var(--poi-color, var(--primary));
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  box-shadow: 0 1px 2px rgba(23, 33, 43, 0.2);
+}
+.mapsButton:hover, .mapsButton:visited, .mapsButton:active { color: #fff; text-decoration: none; }
+.mapsButton:hover { filter: brightness(0.9); }
+.mapsButton:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+.poiCardButton { margin-top: 4px; }
+.mapsButtonLarge { min-height: 44px; padding: 10px 18px; font-size: 15px; }
 .poiMedia {
   position: relative;
   display: flex;
@@ -223,9 +217,31 @@
 .poiMediaFallback { background: var(--poi-color); color: #fff; }
 .poiMediaFallback svg { width: 40px; height: 40px; }
 .poiInfo { display: flex; flex-direction: column; gap: 6px; min-width: 0; flex: 1; padding: 12px 14px; }
-.option .poiInfo .poiName { font-size: 16px; line-height: 1.3; overflow-wrap: anywhere; }
-.option .poiInfo .poiAddress { font-size: 14px; line-height: 1.4; color: var(--ink-mid); }
-.option .poiInfo .poiCategoryLabel { font-size: 13px; color: var(--ink-soft); }
+.poiCard .poiName strong { font-size: 16px; line-height: 1.3; overflow-wrap: anywhere; }
+.poiCard .poiAddress { font-size: 14px; line-height: 1.4; color: var(--ink-mid); }
+/* Category pill: a light tint of the POI colour, with the full colour for the
+   text and border so it stays readable (the fallback is for browsers without
+   color-mix). */
+.poiCard .poiCategoryLabel {
+  align-self: flex-start;
+  /* Never wider than the info column: long labels end in "…" inside the card. */
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 3px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--poi-color);
+  background: var(--primary-tint);
+  background: color-mix(in srgb, var(--poi-color) 12%, #fff);
+  border: 1px solid var(--line);
+  border-color: color-mix(in srgb, var(--poi-color) 35%, #fff);
+  border-radius: 999px;
+}
+.poiCard .poiCategoryLabel:empty { display: none; }
 .poiMarker {
   width: 44px;
   height: 44px;
@@ -244,7 +260,6 @@
 .poiMarker:focus-visible .markerBadge { outline: 3px solid var(--primary); outline-offset: 3px; }
 .poiMarker:hover .markerBadge { box-shadow: 0 3px 10px #17212b99; }
 .poiPopup { z-index: 2; }
-.noPhone { display: block; padding: 8px 12px; }
 
 /* Tổ card: the <li> is the card; the select button stretches over it. */
 .nbCard {
@@ -252,7 +267,7 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  padding: 14px 14px 6px;
+  padding: 14px;
   font-size: 14px;
   line-height: 1.4;
   color: var(--ink-mid);
@@ -275,21 +290,70 @@
 .nbSelect::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
 .nbSelect:focus-visible { outline: none; }
 .nbSelect:focus-visible::after { outline: 3px solid var(--primary); outline-offset: -3px; }
-.nbArea { overflow-wrap: anywhere; }
-.nbClamp { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .nbStats { color: var(--ink-soft); }
 .nbStats b { color: var(--primary-deep); }
-.nbDescription { color: var(--ink); }
-.nbActions {
+
+/* Phones: still larger than before, but leave room to see that the strip scrolls. */
+@media (max-width: 760px) {
+  .categoryChip { min-width: 116px; max-width: 150px; min-height: 96px; padding: 12px 12px; font-size: 16px; }
+  .chipIcon { height: 32px; font-size: 28px; }
+  .chipIcon svg { width: 30px; height: 30px; }
+}
+
+/* Selected POI: profile image in the map popup and the details panel. */
+.poiPopupImage {
+  display: block;
+  width: 100%;
+  height: 140px;
+  margin-bottom: 10px;
+  object-fit: cover;
+  border-radius: 6px;
+  background: var(--placeholder);
+}
+.poiDetail { display: flex; gap: 18px; align-items: flex-start; }
+.poiDetailInfo { display: flex; flex-direction: column; gap: 8px; min-width: 0; flex: 1; }
+.poiDetailImage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 220px;
+  width: 220px;
+  height: 160px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  background: var(--placeholder);
+}
+.poiDetailImage svg { width: 48px; height: 48px; }
+@media (max-width: 760px) {
+  .poiDetail { flex-direction: column; }
+  .poiDetailImage { flex-basis: auto; width: 100%; height: 180px; }
+}
+
+/* Map popup content: everything aligned to one left edge. */
+.poiPopupContent { display: flex; flex-direction: column; gap: 6px; }
+.poiPopupContent .poiPopupImage { margin-bottom: 4px; }
+.poiPopupAddress { margin: 0; font-size: 13px; line-height: 1.4; color: var(--ink-mid); }
+.poiPopupContent .mapsButton { margin-top: 4px; white-space: nowrap; }
+
+/* Highlighted button on the compact tổ card -> full profile on the info page. */
+.nbInfoButton {
   position: relative;
   z-index: 1;
-  display: flex;
-  flex-wrap: wrap;
+  display: inline-flex;
   align-items: center;
-  gap: 0 4px;
-  margin: 2px -12px 0;
-  padding-top: 4px;
-  border-top: 1px solid var(--line-soft);
+  justify-content: center;
+  align-self: flex-start;
+  min-height: 40px;
+  margin-top: 4px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  background: var(--primary);
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  box-shadow: 0 1px 2px rgba(23, 33, 43, 0.2);
 }
-.nbActions .noPhone { font-size: 13px; color: var(--ink-soft); }
-.option strong { font-family: var(--font-heading); }
+.nbInfoButton:hover, .nbInfoButton:visited, .nbInfoButton:active { color: #fff; text-decoration: none; }
+.nbInfoButton:hover { background: var(--primary-deep); }
+.nbInfoButton:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }

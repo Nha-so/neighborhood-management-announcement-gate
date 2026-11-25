@@ -5,6 +5,7 @@ import mapWorkerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url";
 import "maplibre-gl/dist/maplibre-gl.css";
 import type { PublicNeighborhood } from "@/types/neighborhood";
 import { googleMapsDirectionsUrl } from "@/utils/googleMaps";
+import { resolveAssetUrl } from "@/utils/resolveAssetUrl";
 import type { PublicPoi } from "./usePublicPois";
 import { geometryBounds, neighborhoodFeatures, neighborhoodGeometry } from "./neighborhoodGeometry";
 import { createPoiIcon, getPoiAppearance } from "./poiAppearance";
@@ -55,7 +56,10 @@ export default function NeighborhoodBoundaryMap({ neighborhoods, selectedId, onS
         container: container.current,
         center: [105.745, 20.98], zoom: 13,
         style: import.meta.env.VITE_MAP_STYLE_URL?.trim() || "https://tiles.openfreemap.org/styles/liberty",
-        cooperativeGestures: true,
+        // Mouse/trackpad: plain scroll-wheel zoom (no Ctrl). Touch screens keep
+        // cooperative gestures so a one-finger swipe still scrolls the page
+        // and two fingers move/zoom the map.
+        cooperativeGestures: window.matchMedia("(pointer: coarse)").matches,
       });
       const current = map;
       mapRef.current = current;
@@ -173,16 +177,30 @@ export default function NeighborhoodBoundaryMap({ neighborhoods, selectedId, onS
     icon.append(createPoiIcon(poi.category));
     heading.append(icon, title);
     const address = document.createElement("p");
-    address.textContent = poi.address;
+    address.textContent = poi.address || "Chưa cập nhật địa chỉ";
     const directions = document.createElement("a");
     directions.href = googleMapsDirectionsUrl(poi.lat, poi.lng);
     directions.target = "_blank";
     directions.rel = "noopener noreferrer";
     directions.textContent = "Chỉ đường trên Google Maps →";
     directions.setAttribute("aria-label", `Chỉ đường đến ${poi.name} trên Google Maps`);
-    directions.className = styles.poiDirections;
+    directions.className = styles.mapsButton;
+    directions.style.setProperty("--poi-color", getPoiAppearance(poi.category).color);
+    address.className = styles.poiPopupAddress;
+    content.className = styles.poiPopupContent;
+    // Profile image on top when the POI has one; hidden again if it fails to load.
+    const imageUrl = resolveAssetUrl(poi.imageUrl);
+    if (imageUrl) {
+      const image = document.createElement("img");
+      image.className = styles.poiPopupImage;
+      image.src = imageUrl;
+      image.alt = poi.name;
+      image.decoding = "async";
+      image.addEventListener("error", () => image.remove(), { once: true });
+      content.append(image);
+    }
     content.append(heading, address, directions);
-    const popup = new maplibregl.Popup({ closeButton: false, className: styles.poiPopup, offset: 24 }).setLngLat([poi.lng, poi.lat]).setDOMContent(content).addTo(map);
+    const popup = new maplibregl.Popup({ closeButton: false, className: styles.poiPopup, offset: 24, maxWidth: "280px" }).setLngLat([poi.lng, poi.lat]).setDOMContent(content).addTo(map);
     return () => { popup.remove(); };
   }, [pois, selectedPoiId, ready]);
 

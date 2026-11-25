@@ -116,25 +116,66 @@
 /* Danh sach To */
 .list { list-style: none; margin: -8px 0 0; padding: 0; }
 .list li + li { margin-top: 10px; }
+/* The card is the <li>; .optionSelect's ::after makes the whole card clickable,
+   and the call link (.optionContact) sits above that layer. */
 .option {
+  position: relative;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  width: 100%;
-  padding: 14px;
-  text-align: left;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 14px 6px;
   color: var(--ink);
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
+}
+.option:hover, .option:focus-within, .optionActive { background: var(--primary-tint); border-color: var(--primary); }
+.optionActive { box-shadow: inset 4px 0 0 var(--primary); }
+.optionTop { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.optionMain { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.optionSelect {
+  padding: 0;
+  text-align: left;
+  color: inherit;
+  background: none;
+  border: 0;
   cursor: pointer;
 }
-.option:hover, .optionActive { background: var(--primary-tint); border-color: var(--primary); }
-.optionActive { box-shadow: inset 4px 0 0 var(--primary); }
-.optionMain { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.optionSelect::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
+.optionSelect:focus-visible { outline: none; }
+.optionSelect:focus-visible::after { outline: 3px solid var(--primary); outline-offset: -3px; }
 .optionName { font-family: var(--font-heading); font-size: 16px; }
 .optionLeader { font-size: 14px; color: var(--ink-mid); }
+.optionArea {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 13px;
+  color: var(--ink-soft);
+  overflow-wrap: anywhere;
+}
+.optionContact {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+  margin: 0 -14px;
+  padding: 0 14px;
+  border-top: 1px solid var(--line-soft);
+}
+.optionCall {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--primary);
+  text-decoration: none;
+}
+.optionCall:hover { text-decoration: underline; }
+.emptyBlock { display: flex; flex-direction: column; gap: 8px; }
 .optionStats {
   display: flex;
   flex-direction: column;

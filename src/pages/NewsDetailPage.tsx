@@ -4,7 +4,7 @@ import { ErrorState, LoadingSpinner } from "@/components/common/StatusStates";
 import { useNewsDetail } from "@/features/news/useNews";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { ApiError } from "@/services/api/client";
-import { getNewsCategoryLabel } from "@/types/news";
+import { getNewsCategoryLabel, getNewsSourceLabel } from "@/types/news";
 import { cn } from "@/utils/cn";
 import { formatDate } from "@/utils/formatDate";
 import { resolveAssetUrl } from "@/utils/resolveAssetUrl";
@@ -60,8 +60,27 @@ export function NewsDetailPage() {
             </span>
             <h1 className={styles.title}>{news.title}</h1>
           </header>
-          {cover && <img className={styles.cover} src={cover} alt="" />}
-          <div className={styles.content} dangerouslySetInnerHTML={{ __html: html }} />
+          {cover && (
+            <img className={styles.cover} src={cover} alt="" referrerPolicy="no-referrer" />
+          )}
+          {news.externalUrl ? (
+            // Tin gan link: chi co tom tat, toan van nam o bai goc.
+            <div className={styles.content}>
+              {news.summary && <p>{news.summary}</p>}
+              <p>
+                <a
+                  className={styles.sourceLink}
+                  href={news.externalUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Đọc toàn văn tại {getNewsSourceLabel(news)} ↗
+                </a>
+              </p>
+            </div>
+          ) : (
+            <div className={styles.content} dangerouslySetInnerHTML={{ __html: html }} />
+          )}
           {gallery.length > 0 && (
             <ul className={styles.gallery} aria-label="Hình ảnh">
               {gallery.map(url => (

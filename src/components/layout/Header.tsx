@@ -103,7 +103,7 @@ export function Header() {
                 <span className={styles.eyebrowShort}>UBND</span>
                 {" "}{wardInSentence}
               </span>
-              <span className={styles.name}>Cổng thông tin điện tử</span>
+              <span className={styles.name}>Trang thông tin điện tử</span>
             </span>
           </Link>
 

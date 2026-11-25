@@ -6,7 +6,6 @@ import { useNeighborhoods } from "@/features/neighborhoods/useNeighborhoods";
 import { useSiteIdentity } from "@/hooks/useSiteIdentity";
 import type { PublicNeighborhood, PublicNeighborhoodStats } from "@/types/neighborhood";
 import { cn } from "@/utils/cn";
-import { telHref } from "@/utils/formatPhone";
 import { googleMapsDirectionsUrl } from "@/utils/googleMaps";
 import { resolveAssetUrl } from "@/utils/resolveAssetUrl";
 import { neighborhoodGeometry } from "./neighborhoodGeometry";
@@ -34,13 +33,25 @@ function PoiThumbnail({ point }: { point: PublicPoi }) {
   </span>;
 }
 
+// Larger profile image for the selected POI; falls back to the category icon
+// (same as the list card) when there is no image or it fails to load.
+function PoiDetailImage({ point }: { point: PublicPoi }) {
+  const src = resolveAssetUrl(point.imageUrl);
+  const [failed, setFailed] = useState(false);
+  if (src && !failed) {
+    return <img className={styles.poiDetailImage} src={src} alt={point.name} decoding="async" onError={() => setFailed(true)} />;
+  }
+  return <span className={cn(styles.poiDetailImage, styles.poiMediaFallback)} style={poiColorStyle(point.category)} aria-hidden="true"><PoiCategoryIcon category={point.category} /></span>;
+}
+
 const countFormat = new Intl.NumberFormat("vi-VN");
 
 /**
- * The tổ card holds ALL public information about the tổ (nothing about it is
- * rendered outside the card). The whole card is clickable through the
- * select button's stretched ::after; the call/directions links sit above that
- * layer so they stay independently clickable (links can't nest in a button).
+ * Compact tổ card for the home map: only the key facts. The full profile
+ * (area, description, phone, org chart, statistics…) lives on the
+ * "Thông tin Tổ dân phố" page, which the highlighted button opens with this
+ * tổ selected. The whole card selects the tổ on the map through the select
+ * button's stretched ::after; the info button sits above that layer.
  */
 function NeighborhoodListCard({ item, stats, selected, onSelect }: {
   item: PublicNeighborhood;
@@ -48,35 +59,24 @@ function NeighborhoodListCard({ item, stats, selected, onSelect }: {
   selected: boolean;
   onSelect: (id: string) => void;
 }) {
-  const phone = item.contactPhone.trim();
-  const address = item.address?.trim();
-  const area = [...item.streets, ...item.alleyDescriptions].map(part => part.trim()).filter(Boolean).join(", ");
-  const description = item.description.trim();
-  const hqQuery = [address, item.wardName, "Việt Nam"].filter(Boolean).join(", ");
   return (
     <li className={cn(styles.nbCard, selected && styles.selected)} data-card-id={item._id}>
       <button type="button" className={styles.nbSelect} aria-pressed={selected} onClick={() => onSelect(item._id)}>
         <strong>{item.name}</strong>
       </button>
       <span>Tổ trưởng: {item.leaderName || "Chưa cập nhật"}</span>
-      <span>Trụ sở: {address || "Chưa cập nhật"}</span>
-      {area && <span className={cn(styles.nbArea, !selected && styles.nbClamp)}>Địa bàn: {area}</span>}
       {stats && (
         <span className={styles.nbStats}>
           <b>{countFormat.format(stats.households)}</b> hộ · <b>{countFormat.format(stats.citizens)}</b> nhân khẩu
-          {(stats.householdBusinesses > 0 || stats.companies > 0) && <> · <b>{countFormat.format(stats.householdBusinesses + stats.companies)}</b> cơ sở kinh doanh</>}
         </span>
       )}
-      {selected && description && <span className={styles.nbDescription}>{description}</span>}
-      <span className={styles.boundaryStatus}>{neighborhoodGeometry(item) ? "Ranh giới đã hiển thị trên bản đồ" : "Chưa công bố ranh giới"}</span>
-      <span className={styles.nbActions}>
-        {phone
-          ? <a className={styles.callLink} href={telHref(phone)} aria-label={`Gọi ${item.name}: ${phone}`}>Gọi tổ: {phone}</a>
-          : <span className={styles.noPhone}>Chưa công bố số liên hệ</span>}
-        {address && (
-          <a className={styles.callLink} href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(hqQuery)}`} target="_blank" rel="noopener noreferrer" aria-label={`Chỉ đường đến trụ sở ${item.name}`}>Chỉ đường đến trụ sở →</a>
-        )}
-      </span>
+      <Link
+        className={styles.nbInfoButton}
+        to={`/thong-tin-to-dan-pho?to=${encodeURIComponent(item._id)}`}
+        aria-label={`Xem thông tin đầy đủ của ${item.name}`}
+      >
+        Xem thông tin tổ →
+      </Link>
     </li>
   );
 }
@@ -134,16 +134,19 @@ export function WardMapSection({ className }: { className?: string }) {
     setQuery("");
     setSelectedPoiId(null);
   };
-  const renderPoiItem = (point: PublicPoi) => <li key={point.id} className={styles.poiItem} data-card-id={point.id}>
-    <button type="button" className={cn(styles.option, styles.poiOption, point.id === selectedPoiId && styles.selected)} aria-pressed={point.id === selectedPoiId} onClick={() => selectPoi(point.id)}>
-      <PoiThumbnail point={point} />
-      <span className={styles.poiInfo}>
-        <strong className={styles.poiName}>{point.name}</strong>
-        <span className={styles.poiAddress}>{point.address || "Chưa cập nhật địa chỉ"}</span>
-        <span className={styles.poiCategoryLabel}>{categoryLabel(point.category)}</span>
-      </span>
-    </button>
-    <a className={styles.poiDirections} href={googleMapsDirectionsUrl(point.lat, point.lng)} target="_blank" rel="noopener noreferrer" aria-label={`Chỉ đường đến ${point.name} trên Google Maps`}>Chỉ đường trên Google Maps →</a>
+  // The <li> is the card; the name button stretches over it (::after) so the
+  // whole card selects the POI, while the directions button sits above that
+  // layer in normal flow (a link can't be nested inside a <button>).
+  const renderPoiItem = (point: PublicPoi) => <li key={point.id} className={cn(styles.poiItem, styles.poiCard, point.id === selectedPoiId && styles.selected)} data-card-id={point.id} style={poiColorStyle(point.category)}>
+    <PoiThumbnail point={point} />
+    <div className={styles.poiInfo}>
+      <span className={styles.poiCategoryLabel}>{categoryLabel(point.category)}</span>
+      <button type="button" className={cn(styles.nbSelect, styles.poiName)} aria-pressed={point.id === selectedPoiId} onClick={() => selectPoi(point.id)}>
+        <strong>{point.name}</strong>
+      </button>
+      <span className={styles.poiAddress}>{point.address || "Chưa cập nhật địa chỉ"}</span>
+      <a className={cn(styles.mapsButton, styles.poiCardButton)} href={googleMapsDirectionsUrl(point.lat, point.lng)} target="_blank" rel="noopener noreferrer" aria-label={`Chỉ đường đến ${point.name} trên Google Maps`}>Chỉ đường trên Google Maps →</a>
+    </div>
   </li>;
   const fallback = <>
     <iframe className={styles.map} title={`Bản đồ tổng quan ${ward}`} src={`https://maps.google.com/maps?q=${wardQuery}&z=14&hl=vi&output=embed`} loading="lazy" referrerPolicy="no-referrer-when-downgrade" allowFullScreen />
@@ -157,10 +160,10 @@ export function WardMapSection({ className }: { className?: string }) {
     <section id="ban-do" className={cn(styles.card, className)} aria-labelledby="ban-do-title">
       <div className={styles.heading}>
         <div>
-          <h2 id="ban-do-title" className={styles.title}>Bản đồ, liên hệ Tổ dân phố & tiện ích</h2>
-          <p className={styles.description}>Tra cứu, liên hệ Tổ dân phố và các địa điểm phục vụ đời sống tại {ward}. Số điện thoại hiển thị là số liên hệ chính thức của tổ, không phải số cá nhân.</p>
+          <h2 id="ban-do-title" className={styles.title}>Bản đồ Tổ dân phố & địa điểm tiện ích</h2>
+          <p className={styles.description}>Tìm Tổ dân phố, tuyến đường hoặc địa điểm tiện ích tại {ward} chỉ với một ô tìm kiếm, hoặc chọn loại địa điểm để hiện trên bản đồ. Mỗi thẻ có số liên hệ chính thức của tổ hoặc nút chỉ đường Google Maps.</p>
         </div>
-        <Link to="/to-dan-pho" className={styles.more}>Xem danh bạ đầy đủ →</Link>
+        <Link to="/thong-tin-to-dan-pho" className={styles.more}>Xem thông tin Tổ dân phố →</Link>
       </div>
       <div>
         <div className={styles.categoryStrip} role="group" aria-label="Loại địa điểm trên bản đồ (có thể chọn nhiều loại)" tabIndex={0}>
@@ -220,12 +223,15 @@ export function WardMapSection({ className }: { className?: string }) {
       </div>
       {/* Tổ details live only in the tổ card - this panel is for POIs and the initial hint. */}
       {!selected && <div className={styles.details} aria-live="polite">
-        {selectedPoi ? <>
-          <h3 className={styles.poiHeading}><span className={styles.poiBadge} style={poiColorStyle(selectedPoi.category)}><PoiCategoryIcon category={selectedPoi.category} /></span>{selectedPoi.name}</h3>
-          <p>{selectedPoi.address || "Chưa cập nhật địa chỉ"}</p>
-          <p className={styles.meta}>Địa điểm đã được xác minh trong danh mục tiện ích.</p>
-          <a className={styles.more} href={googleMapsDirectionsUrl(selectedPoi.lat, selectedPoi.lng)} target="_blank" rel="noopener noreferrer">Chỉ đường đến địa điểm →</a>
-        </> : <p>Chọn một Tổ dân phố hoặc địa điểm trong danh sách hay trên bản đồ để xem chi tiết và chỉ đường.</p>}
+        {selectedPoi ? <div className={styles.poiDetail} style={poiColorStyle(selectedPoi.category)}>
+          <PoiDetailImage key={selectedPoi.id} point={selectedPoi} />
+          <div className={styles.poiDetailInfo}>
+            <h3 className={styles.poiHeading}><span className={styles.poiBadge} style={poiColorStyle(selectedPoi.category)}><PoiCategoryIcon category={selectedPoi.category} /></span>{selectedPoi.name}</h3>
+            <p>{selectedPoi.address || "Chưa cập nhật địa chỉ"}</p>
+            <p className={styles.meta}>{categoryLabel(selectedPoi.category)} · Địa điểm đã được xác minh trong danh mục tiện ích.</p>
+            <a className={cn(styles.mapsButton, styles.mapsButtonLarge)} href={googleMapsDirectionsUrl(selectedPoi.lat, selectedPoi.lng)} target="_blank" rel="noopener noreferrer">Chỉ đường trên Google Maps →</a>
+          </div>
+        </div> :<p>Chọn một Tổ dân phố hoặc địa điểm trong danh sách hay trên bản đồ để xem chi tiết và chỉ đường.</p>}
       </div>}
     </section>
   );

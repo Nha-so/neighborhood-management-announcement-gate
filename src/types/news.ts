@@ -14,9 +14,22 @@ export const LOAI_TIN_TUC_LABEL: Record<LoaiTinTuc, string> = {
   khac: "Khác",
 };
 
+export function getNewsSourceLabel(item: Pick<NewsItem, "source" | "externalUrl">): string | undefined {
+  if (!item.externalUrl || !item.source || item.source === "noi_bo") return undefined;
+  return NEWS_SOURCE_LABEL[item.source] ?? "Nguồn bên ngoài";
+}
+
 export function getNewsCategoryLabel(category: string): string {
   return LOAI_TIN_TUC_LABEL[category as LoaiTinTuc] ?? "Tin tức";
 }
+
+// "noi_bo" = tin to dan pho tu soan; con lai = tin gan link tu cong thong tin
+// chinh thuc (chi co tieu de + tom tat, doc toan van o bai goc).
+export type NguonTinTuc = "noi_bo" | "duongnoi";
+
+export const NEWS_SOURCE_LABEL: Record<Exclude<NguonTinTuc, "noi_bo">, string> = {
+  duongnoi: "Cổng TTĐT phường Dương Nội",
+};
 
 export type NewsItem = {
   _id: string;
@@ -24,6 +37,10 @@ export type NewsItem = {
   category: LoaiTinTuc;
   // HTML da qua trinh soan thao - phai sanitize truoc khi render.
   content: string;
+  // Ban ghi cu chua co source -> coi nhu "noi_bo".
+  source?: NguonTinTuc;
+  externalUrl?: string;
+  summary?: string;
   coverImageUrl?: string;
   images?: string[];
   pinned: boolean;

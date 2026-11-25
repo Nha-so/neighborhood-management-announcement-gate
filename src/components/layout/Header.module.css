@@ -230,6 +230,7 @@
 .navList {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   column-gap: 28px;
   list-style: none;
   margin: 0 auto;

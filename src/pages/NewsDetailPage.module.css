@@ -150,6 +150,23 @@
   border-radius: var(--radius-sm);
 }
 
+/* Nut mo bai goc cua tin gan link tu cong phuong. */
+.sourceLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: var(--radius-sm);
+  background: var(--primary);
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.sourceLink:hover {
+  opacity: 0.9;
+}
+
 .back {
   display: inline-flex;
   align-items: center;
