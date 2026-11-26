@@ -1,30 +1,50 @@
+/* Chan trang: nen xanh dam gradient, bo goc tren lon, anh sang mo goc phai. */
 .footer {
-  margin-top: 56px;
-  background: var(--primary-deep);
-  color: #e6eef8;
+  position: relative;
+  margin-top: 88px;
+  background: var(--grad-navy);
+  color: #d6e4f5;
   outline: none;
+  border-radius: 32px 32px 0 0;
+  overflow: hidden;
+}
+
+.footer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(600px 300px at 92% 0%, rgba(14, 165, 233, 0.28), transparent 70%),
+    radial-gradient(500px 260px at 0% 100%, rgba(5, 150, 105, 0.16), transparent 70%);
+  pointer-events: none;
+}
+
+.footer > * {
+  position: relative;
 }
 
 .footer a {
   color: #fff;
+  text-decoration-color: rgba(255, 255, 255, 0.4);
+  text-underline-offset: 3px;
 }
 
 .footer a:hover {
-  color: #dbe7f5;
+  color: #bfe3fb;
 }
 
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
-  gap: 28px;
-  padding-top: 40px;
-  padding-bottom: 28px;
+  gap: 32px;
+  padding-top: 56px;
+  padding-bottom: 36px;
 }
 
 .col {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   min-width: 0;
   overflow-wrap: anywhere;
 }
@@ -34,14 +54,31 @@
 .content img { max-width: 100%; height: auto; }
 
 .unit {
-  font-size: 17px;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
   color: #fff;
+  margin-bottom: 4px;
 }
 
 .colTitle {
-  font-family: var(--font-heading);
-  font-size: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 4px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   color: #fff;
+}
+
+.colTitle::after {
+  content: "";
+  width: 28px;
+  height: 3px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--sky), var(--emerald));
 }
 
 .hotlines {
@@ -50,36 +87,48 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 6px;
 }
 
 .hotline {
   display: inline-flex;
   align-items: center;
-  min-height: 32px;
+  min-height: 36px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.footer .hotline:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.16);
 }
 
 .hotlinePhone {
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .bottom {
-  border-top: 1px solid rgba(255, 255, 255, 0.18);
-  padding-top: 14px;
-  padding-bottom: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  padding-top: 18px;
+  padding-bottom: 24px;
   font-size: 13px;
-  color: #c3d4ea;
+  color: #a9c1df;
 }
 
 @media (max-width: 760px) {
   .footer {
-    margin-top: 36px;
+    margin-top: 56px;
+    border-radius: 24px 24px 0 0;
     font-size: 14px;
   }
 
   .grid {
     gap: 18px;
-    padding-top: 28px;
+    padding-top: 36px;
   }
 
   .unit {

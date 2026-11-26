@@ -1,16 +1,29 @@
 .card {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 18px;
+  gap: 18px;
+  padding: 24px;
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
   min-width: 0;
 }
 
 .title {
-  font-size: 18px;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.title::before {
+  content: "";
+  display: block;
+  width: 36px;
+  height: 4px;
+  margin-bottom: 10px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--emerald), var(--sky));
 }
 
 .grid {
@@ -18,45 +31,73 @@
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(140px, 100%), 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(min(168px, 100%), 1fr));
+  gap: 14px;
 }
 
 .grid li {
   display: flex;
 }
 
+/* O ung dung: icon lon trong khung bo tron, nhac len khi di chuot. */
 .link {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  min-height: 64px;
-  padding: 10px 8px;
+  gap: 12px;
+  min-height: 120px;
+  padding: 18px 12px;
   border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, #f8fbfe 0%, #ffffff 100%);
   text-align: center;
   text-decoration: none;
   color: var(--ink);
-  transition: border-color 0.15s ease;
+  transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), border-color 0.2s ease;
 }
 
 .link:hover {
-  border-color: var(--primary);
+  border-color: #b9d3ee;
   color: var(--primary);
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-3px);
 }
 
 .icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
+  width: 52px;
+  height: 52px;
+  padding: 4px;
+  border-radius: 16px;
   object-fit: cover;
+  background: #fff;
+  box-shadow: 0 6px 16px -6px rgba(11, 60, 120, 0.35);
 }
 
 .name {
-  font-family: var(--font-heading);
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .link {
+    transition: none;
+  }
+
+  .link:hover {
+    transform: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .card {
+    padding: 18px;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
 }

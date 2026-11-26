@@ -1,7 +1,29 @@
+/* Dau trang con: dai "bau troi" gradient bo goc (cung tinh than banner trang chu). */
 .wrap {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 18px;
+  padding: 36px 40px 40px;
+  border-radius: calc(var(--radius) + 6px);
+  background: var(--grad-sky);
+  color: #fff;
+  overflow: hidden;
+  box-shadow: var(--shadow-float);
+}
+
+.wrap::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(420px 240px at 90% 10%, rgba(255, 255, 255, 0.16), transparent 70%),
+    radial-gradient(rgba(255, 255, 255, 0.2) 1px, transparent 1.5px) 0 0 / 22px 22px;
+  pointer-events: none;
+}
+
+.wrap > * {
+  position: relative;
 }
 
 .crumbs ol {
@@ -12,18 +34,26 @@
   flex-wrap: wrap;
   gap: 6px;
   font-size: 13px;
-  color: var(--ink-soft);
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .crumbs li + li::before {
   content: "/";
   margin-right: 6px;
+  opacity: 0.7;
 }
 
 .crumbs a {
   display: inline-flex;
   align-items: center;
   min-height: 24px;
+  color: #fff;
+  text-underline-offset: 3px;
+}
+
+.crumbs a:hover {
+  color: #fff;
 }
 
 .row {
@@ -39,22 +69,28 @@
 }
 
 .title {
-  font-size: 30px;
+  font-size: clamp(26px, 3vw, 38px);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: #fff;
+  text-shadow: 0 2px 18px rgba(8, 40, 90, 0.25);
 }
 
 .desc {
   margin-top: 12px;
-  font-size: 15px;
-  color: var(--ink-soft);
-  max-width: 70ch;
+  font-size: 15.5px;
+  color: rgba(255, 255, 255, 0.92);
+  max-width: 78ch;
 }
 
 @media (max-width: 760px) {
   .wrap {
     gap: 12px;
+    padding: 22px 18px 24px;
+    border-radius: var(--radius);
   }
 
-  .title {
-    font-size: 24px;
+  .desc {
+    font-size: 14.5px;
   }
 }

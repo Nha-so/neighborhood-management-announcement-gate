@@ -2,5 +2,6 @@
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  padding: 18px;
+  box-shadow: var(--shadow-sm);
+  padding: 20px;
 }

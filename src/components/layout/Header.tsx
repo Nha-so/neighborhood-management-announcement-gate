@@ -107,6 +107,34 @@ export function Header() {
             </span>
           </Link>
 
+          {/* Man hinh rong: menu nam cung hang voi logo. Man hinh hep: menu tha
+              xuong duoi header khi bam nut menu. */}
+          <nav
+            id="dieu-huong-chinh"
+            aria-label="Điều hướng chính"
+            className={cn(styles.nav, open && styles.open)}
+          >
+            <ul className={styles.navList}>
+              {navLinks.map(link => (
+                <li key={link.to}>
+                  {link.route ? (
+                    <NavLink
+                      to={link.to}
+                      end
+                      className={({ isActive }) => cn(styles.navLink, isActive && styles.active)}
+                    >
+                      {link.label}
+                    </NavLink>
+                  ) : (
+                    <Link to={link.to} className={styles.navLink}>
+                      {link.label}
+                    </Link>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </nav>
+
           <div className={styles.authActions} role="group" aria-label="Đăng nhập tài khoản">
             {signInOptions.map(option => option.href ? (
               <a key={option.label} className={styles.loginButton} href={option.href}>
@@ -132,7 +160,8 @@ export function Header() {
               onClick={() => setAuthOpen(prev => !prev)}
             >
               <Icon name="user" size={18} />
-              Đăng nhập
+              {/* Dien thoai hep: an chu (van doc duoc bang trinh doc man hinh). */}
+              <span className={styles.authLabel}>Đăng nhập</span>
               <Icon name="chevron" size={14} className={cn(styles.authChevron, authOpen && styles.authChevronOpen)} />
             </button>
             {authOpen && (
@@ -169,32 +198,6 @@ export function Header() {
           </button>
         </div>
       </div>
-
-      <nav
-        id="dieu-huong-chinh"
-        aria-label="Điều hướng chính"
-        className={cn(styles.nav, open && styles.open)}
-      >
-        <ul className={cn("wrap", styles.navList)}>
-          {navLinks.map(link => (
-            <li key={link.to}>
-              {link.route ? (
-                <NavLink
-                  to={link.to}
-                  end
-                  className={({ isActive }) => cn(styles.navLink, isActive && styles.active)}
-                >
-                  {link.label}
-                </NavLink>
-              ) : (
-                <Link to={link.to} className={styles.navLink}>
-                  {link.label}
-                </Link>
-              )}
-            </li>
-          ))}
-        </ul>
-      </nav>
     </header>
   );
 }

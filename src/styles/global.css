@@ -1,17 +1,34 @@
 :root {
   --gutter: clamp(16px, 3vw, 48px);
-  --bg: #f4f6f9;
+  --container: 1320px;
+  --header-height: 76px;
+  /* Khoi dau tien duoi banner trang chu de len mep banner mot doan nay. */
+  --hero-overlap: 64px;
+  --bg: #f3f8fc;
   --surface: #ffffff;
-  --line: #dde3ea;
-  --line-soft: #edf1f5;
-  --field-line: #b9c5d2;
-  --ink: #17212b;
-  --ink-mid: #34414e;
-  --ink-soft: #4a5866;
-  --primary: #0d4b91;
-  --primary-deep: #0a3a70;
-  --primary-tint: #e7f0fa;
-  --hero: #1d5aa3;
+  --line: #e1eaf3;
+  --line-soft: #eef3f8;
+  --field-line: #c5d3e2;
+  --ink: #0f1c2e;
+  --ink-mid: #334155;
+  --ink-soft: #526175;
+  --primary: #0b5cad;
+  --primary-deep: #08427f;
+  --primary-tint: #e8f2fc;
+  --sky: #0ea5e9;
+  --sky-tint: #e0f4fd;
+  --emerald: #059669;
+  --emerald-tint: #e3f7ef;
+  --gold: #f59e0b;
+  --hero: #0b5cad;
+  --grad-primary: linear-gradient(135deg, #0b5cad 0%, #0284c7 100%);
+  --grad-primary-hover: linear-gradient(135deg, #08427f 0%, #0369a1 100%);
+  /* Du dam de chu trang tren nen dat tuong phan >= 4.5:1 o moi diem. */
+  --grad-sky: linear-gradient(135deg, #0a4a8f 0%, #0b63bd 50%, #0278b8 100%);
+  --grad-navy: linear-gradient(160deg, #0a2a55 0%, #0b3d78 60%, #0b5cad 130%);
+  --shadow-sm: 0 1px 2px rgba(15, 28, 46, 0.04), 0 4px 16px rgba(11, 70, 140, 0.06);
+  --shadow-hover: 0 2px 4px rgba(15, 28, 46, 0.05), 0 14px 32px rgba(11, 70, 140, 0.13);
+  --shadow-float: 0 24px 60px -18px rgba(11, 60, 120, 0.35);
   --accent: #c8102e;
   --danger: #a00d24;
   --danger-tint: #fdecee;
@@ -21,11 +38,12 @@
   --notice-tint: #fffaf2;
   --notice-line: #f3c98b;
   --placeholder: #e3e9f0;
-  --shadow-raised: 0 6px 18px rgba(13, 40, 80, 0.1);
-  --radius: 10px;
-  --radius-sm: 8px;
-  --font: "Roboto", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
-  --font-heading: "Merriweather", Georgia, "Times New Roman", serif;
+  --shadow-raised: 0 12px 32px rgba(11, 70, 140, 0.12);
+  --radius: 18px;
+  --radius-sm: 12px;
+  --font: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --font-heading: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
 * {
@@ -35,6 +53,8 @@
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+  /* Header dinh (sticky) khong che muc dich khi cuon toi #neo. */
+  scroll-padding-top: calc(var(--header-height) + 16px);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -45,12 +65,18 @@ html {
 
 body {
   margin: 0;
-  background: var(--bg);
+  /* Nen sang co vet xanh nhat o dau trang - giong cam giac "troi" thoang. */
+  background:
+    radial-gradient(1200px 520px at 85% -10%, rgba(14, 165, 233, 0.08), transparent 70%),
+    radial-gradient(900px 480px at -10% 30%, rgba(5, 150, 105, 0.05), transparent 70%),
+    var(--bg);
   color: var(--ink);
   font-family: var(--font);
   font-size: 15px;
-  line-height: 1.6;
+  line-height: 1.65;
   overflow-wrap: break-word;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 h1,
@@ -59,8 +85,14 @@ h3 {
   font-family: var(--font-heading);
   font-weight: 700;
   color: var(--ink);
-  line-height: 1.3;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
   margin: 0;
+}
+
+::selection {
+  background: #bfe3fb;
+  color: var(--ink);
 }
 
 p {
@@ -85,13 +117,14 @@ input {
 }
 
 :focus-visible {
-  outline: 3px solid #2f7ad8;
+  outline: 3px solid #2f8ae0;
   outline-offset: 2px;
 }
 
-/* Shared gutters must not reset section spacing or narrower article widths. */
+/* Shared gutters must not reset section spacing or narrower article widths.
+   Noi dung gioi han o --container (+ le) de man hinh rong khong bi dan qua. */
 :where(.wrap) {
-  max-width: none;
+  max-width: calc(var(--container) + 2 * var(--gutter));
   margin-inline: auto;
   padding-inline: var(--gutter);
 }
@@ -126,6 +159,9 @@ input {
 
 @media (max-width: 760px) {
   :root {
-    --gutter: 12px;
+    --gutter: 14px;
+    --header-height: 64px;
+    --hero-overlap: 28px;
+    --radius: 16px;
   }
 }
